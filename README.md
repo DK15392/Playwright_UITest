@@ -26,6 +26,8 @@ npm run test:headed
 npm run report
 ```
 
+Tests run in headed Chromium mode and save a screenshot after each test. Run `npm run report` after the job completes, open the test result, and select the `screenshot` attachment.
+
 Set `BASE_URL` to point the suite at another environment:
 
 ```bash
