@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "npm run typecheck",
     "test": "playwright test",
+    "test:ci": "xvfb-run --auto-servernum npm test",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "report": "playwright show-report",
