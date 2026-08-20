@@ -5,47 +5,35 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-<<<<<<< HEAD
 - task: NodeTool@0
+  displayName: Install Node.js
   inputs:
     versionSpec: '20.x'
-  displayName: 'Install Node.js'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
-=======
-  - task: UseNode@1
-    displayName: Use Node.js 24
-    inputs:
-      version: 24.x
+- script: npm ci
+  displayName: Install npm dependencies
 
-  - script: npm ci
-    displayName: Install npm dependencies
+- script: npx playwright install --with-deps chromium
+  displayName: Install Playwright Chromium
 
-  - script: npx playwright install --with-deps chromium
-    displayName: Install Playwright Chromium
+- script: npm run build
+  displayName: Build and type-check
 
-  - script: npm run build
-    displayName: Build and type-check
+- script: npm run test:ci
+  displayName: Run headed Playwright tests
+  env:
+    CI: true
 
-  - script: npm run test:ci
-    displayName: Run headed Playwright tests
-    env:
-      CI: true
+- task: PublishPipelineArtifact@1
+  displayName: Publish screenshots and test results
+  condition: always()
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/test-results'
+    artifact: playwright-screenshots
 
-  - task: PublishPipelineArtifact@1
-    displayName: Publish screenshots and test results
-    condition: always()
-    inputs:
-      targetPath: '$(System.DefaultWorkingDirectory)/test-results'
-      artifact: playwright-screenshots
-
-  - task: PublishPipelineArtifact@1
-    displayName: Publish Playwright HTML report
-    condition: always()
-    inputs:
-      targetPath: '$(System.DefaultWorkingDirectory)/playwright-report'
-      artifact: playwright-report
->>>>>>> 83daabb (Fix pipeline build and publish Playwright artifacts)
+- task: PublishPipelineArtifact@1
+  displayName: Publish Playwright HTML report
+  condition: always()
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/playwright-report'
+    artifact: playwright-report
